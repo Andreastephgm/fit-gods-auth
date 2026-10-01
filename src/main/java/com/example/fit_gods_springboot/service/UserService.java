@@ -28,6 +28,22 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    // Método de autenticación requerido para la evidencia AA5-EV01
+    public Optional<User> authenticate(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        // Verifica si el usuario existe y coincide la contraseña
+        if (userOptional.isPresent() && userOptional.get().getPassword().equals(password)) {
+            return userOptional;
+        }
+
+        return Optional.empty(); // Falla la autenticación
+    }
+
     public User update(User user) {
         return userRepository.save(user);
     }
