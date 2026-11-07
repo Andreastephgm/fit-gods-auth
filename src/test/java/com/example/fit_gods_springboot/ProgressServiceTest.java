@@ -58,11 +58,10 @@ class ProgressServiceTest {
         progress.setIdProgress(1L);
 
         when(progressRepository.findById(1L)).thenReturn(Optional.of(progress));
+        Progress result = progressService.findById(1L);
 
-        Optional<Progress> result = progressService.findById(1L);
-
-        assertTrue(result.isPresent());
-        assertEquals(1L, result.get().getIdProgress());
+        assertNotNull(result);
+        assertEquals(1L, result.getIdProgress());
         verify(progressRepository, times(1)).findById(1L);
     }
 }

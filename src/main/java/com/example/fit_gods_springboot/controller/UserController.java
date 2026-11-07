@@ -37,38 +37,33 @@ public class UserController {
     // GET: http://localhost:8080/api/users/{id}
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        User user = userService.findById(id);
+        return ResponseEntity.ok(user);
     }
 
     // Actualizar un usuario existente
     // PUT: http://localhost:8080/api/users/update/{id}
     @PutMapping("/update/{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User userDetails) {
-        return userService.findById(id).map(user -> {
-            user.setName(userDetails.getName());
-            user.setSurname(userDetails.getSurname());
-            user.setHeight(userDetails.getHeight());
-            user.setEmail(userDetails.getEmail());
-            user.setDateOfBirth(userDetails.getDateOfBirth());
-            user.setWeight(userDetails.getWeight());
-            user.setPassword(userDetails.getPassword());
-            user.setObjective(userDetails.getObjective());
+        User existingUser = userService.findById(id);
+        existingUser.setName(userDetails.getName());
+        existingUser.setSurname(userDetails.getSurname());
+        existingUser.setHeight(userDetails.getHeight());
+        existingUser.setEmail(userDetails.getEmail());
+        existingUser.setDateOfBirth(userDetails.getDateOfBirth());
+        existingUser.setWeight(userDetails.getWeight());
+        existingUser.setPassword(userDetails.getPassword());
+        existingUser.setObjective(userDetails.getObjective());
 
-            User userUpdate = userService.save(user);
-            return ResponseEntity.ok(userUpdate);
-        }).orElse(ResponseEntity.notFound().build());
+        User userUpdate = userService.save(existingUser);
+        return ResponseEntity.ok(userUpdate);
     }
 
     // Eliminar un usuario por ID
     // DELETE: http://localhost:8080/api/users/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        if (userService.findById(id).isPresent()) {
-            userService.delete(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

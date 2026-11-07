@@ -7,6 +7,7 @@ import com.example.fit_gods_springboot.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -34,8 +35,9 @@ public class ProgressService {
         return progressRepository.findAll();
     }
 
-    public Optional<Progress> findById(Long id) {
-        return progressRepository.findById(id);
+    public Progress findById(Long id) {
+        return progressRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Progreso con ID: " + id));
     }
 
     public List<Progress> findByUserId(Long idUser) {
@@ -44,7 +46,7 @@ public class ProgressService {
 
     public Progress update(Progress progress) {
         // Reutiliza la lógica de save para garantizar la asociación con un usuario existente
-        return save(progress);
+        return progressRepository.save(progress);
     }
 
     public void deleteById(Long id) {

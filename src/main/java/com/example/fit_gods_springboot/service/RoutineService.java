@@ -7,6 +7,7 @@ import com.example.fit_gods_springboot.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 // Anotación de Spring para indicar que esta clase pertenece a la capa de lógica de negocio
@@ -41,8 +42,10 @@ public class RoutineService {
     }
 
     // Método para buscar una rutina por su id (clave primaria)
-    public Optional<Routine> findById(Long id) {
-        return routineRepository.findById(id);
+    public Routine findById(Long id) {
+
+        return routineRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Rutina con ID: " + id));
     }
 
     // Método para consultar las rutinas asignadas a un usuario específico

@@ -5,6 +5,7 @@ import com.example.fit_gods_springboot.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -24,31 +25,35 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public User findById(Long id) {
+
+        return userRepository.findById(id)
+                .orElseThrow(() -> new  NoSuchElementException("Usuario con ID: " + id));
     }
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    // Método de autenticación requerido para la evidencia AA5-EV01
-    public Optional<User> authenticate(String email, String password) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
+    //Autenticación
+    public User authenticate(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("Credenciales inválidas o usuario no registrado."));
 
-        // Verifica si el usuario existe y coincide la contraseña
-        if (userOptional.isPresent() && userOptional.get().getPassword().equals(password)) {
-            return userOptional;
+        if (!user.getPassword().equals(password)) {
+            throw  new IllegalArgumentException("Contraseña incorrecta.");
         }
 
-        return Optional.empty(); // Falla la autenticación
+        return user;
     }
 
     public User update(User user) {
-        return userRepository.save(user);
+        User existingUser = findById(user.getId());
+        return userRepository.save(existingUser);
     }
 
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        User user = findById(id);
+        userRepository.delete(user);
     }
 }

@@ -72,26 +72,20 @@ class UserServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        // Act
-        Optional<User> result = userService.findById(1L);
+        User result = userService.findById(1L);
 
-        // Assert
-        assertTrue(result.isPresent());
-        assertEquals("Maria", result.get().getName());
+        assertNotNull(result);
+        assertEquals("Maria", result.getName());
         verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
     void testDeleteUser() {
-        // Arrange
+
         Long userId = 1L;
         doNothing().when(userRepository).deleteById(userId);
-
-        // Act
         userService.delete(userId);
 
-        // Assert
-        // Verificamos que se ejecutó la orden de eliminar en el repositorio
         verify(userRepository, times(1)).deleteById(userId);
     }
 }

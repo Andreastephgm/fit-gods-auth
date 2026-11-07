@@ -31,9 +31,8 @@ public class ProgressController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Progress> findById(@PathVariable Long id) {
-        return progressService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Progress progress = progressService.findById(id);
+        return ResponseEntity.ok(progress);
     }
 
     @GetMapping("/user/{idUser}")
@@ -45,26 +44,20 @@ public class ProgressController {
     // Endpoint PUT para solucionar el "Method 'PUT' is not supported"
     @PutMapping("/update/{id}")
     public ResponseEntity<Progress> update(@PathVariable Long id, @RequestBody Progress progressDetails) {
-        return progressService.findById(id).map(existingProgress -> {
-            existingProgress.setDate(progressDetails.getDate());
-            existingProgress.setWeight(progressDetails.getWeight());
-            existingProgress.setNotes(progressDetails.getNotes());
+        Progress existingProgress = progressService.findById(id);
+        existingProgress.setWeight(progressDetails.getWeight());
+        existingProgress.setDate(progressDetails.getDate());
+        existingProgress.setNotes(progressDetails.getNotes());
 
-            if (progressDetails.getUser() != null) {
-                existingProgress.setUser(progressDetails.getUser());
-            }
+        Progress progressSave = progressService.save(existingProgress);
 
-            Progress updatedProgress = progressService.update(existingProgress);
-            return ResponseEntity.ok(updatedProgress);
-        }).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(progressSave);
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        if (progressService.findById(id).isPresent()) {
-            progressService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        progressService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -40,9 +40,8 @@ public class RoutineController {
     // GET: http://localhost:8080/api/routines/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Routine> findById(@PathVariable Long id) {
-        return routineService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Routine routine = routineService.findById(id);
+        return ResponseEntity.ok(routine);
     }
 
     // Endpoint para buscar todas las rutinas de un usuario específico
@@ -57,29 +56,22 @@ public class RoutineController {
     // PUT: http://localhost:8080/api/routines/update/{id}
     @PutMapping("/update/{id}")
     public ResponseEntity<Routine> update(@PathVariable Long id, @RequestBody Routine routineDetails) {
-        return routineService.findById(id).map(routine -> {
-            // Actualización de campos de la rutina
-            routine.setName(routineDetails.getName());
-            routine.setObjective(routineDetails.getObjective());
+        Routine existingRoutine = routineService.findById(id);
 
-            // Actualización del usuario si se reasigna la rutina
-            if (routineDetails.getUser() != null) {
-                routine.setUser(routineDetails.getUser());
-            }
+        existingRoutine.setName(routineDetails.getName());
+        existingRoutine.setObjective(routineDetails.getObjective());
 
-            Routine routineUpdate = routineService.save(routine);
-            return ResponseEntity.ok(routineUpdate);
-        }).orElse(ResponseEntity.notFound().build());
+        Routine routineSave = routineService.save(existingRoutine);
+
+        return ResponseEntity.ok(routineSave);
     }
 
     // Endpoint para eliminar una rutina por su id
     // DELETE: http://localhost:8080/api/routines/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        if (routineService.findById(id).isPresent()) {
-            routineService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        routineService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -43,14 +43,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         // Se llama al método authenticate definido en UserService
-        Optional<User> authenticatedUser = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+        User authenticatedUser = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
-        if (authenticatedUser.isPresent()) {
-            AuthResponse response = new AuthResponse(true, "Autenticación satisfactoria", authenticatedUser.get());
-            return ResponseEntity.ok(response);
-        } else {
-            AuthResponse response = new AuthResponse(false, "Error en la autenticación: Credenciales inválidas", null);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        AuthResponse response = new AuthResponse(true, "Autenticación satisfactoria", authenticatedUser);
+        return ResponseEntity.ok(response);
         }
     }
-}
+

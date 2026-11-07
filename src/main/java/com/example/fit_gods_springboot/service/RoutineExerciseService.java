@@ -7,7 +7,7 @@ import com.example.fit_gods_springboot.repository.RoutineRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class RoutineExerciseService {
@@ -30,7 +30,7 @@ public class RoutineExerciseService {
 
             if (routineId != null) {
                 Routine routineFromDb = routineRepository.findById(routineId)
-                        .orElseThrow(() -> new RuntimeException("Rutina no encontrada con ID: " + routineId));
+                        .orElseThrow(() -> new NoSuchElementException("Rutina no encontrada con ID: " + routineId));
 
                 // Asignamos la rutina persistida de la base de datos
                 routineExercise.setRoutine(routineFromDb);
@@ -45,8 +45,10 @@ public class RoutineExerciseService {
     }
 
     // Buscar por ID del registro (idRoutineExercise)
-    public Optional<RoutineExercise> findById(Long id) {
-        return routineExerciseRepository.findById(id);
+    public RoutineExercise findById(Long id) {
+
+        return routineExerciseRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Ejercicio con ID: " + id));
     }
 
     // Listar todos los ejercicios asociados a una rutina

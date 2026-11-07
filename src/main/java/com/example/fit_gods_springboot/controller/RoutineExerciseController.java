@@ -38,9 +38,8 @@ public class RoutineExerciseController {
     // GET: http://localhost:8080/api/routine-exercises/{id}
     @GetMapping("/{id}")
     public ResponseEntity<RoutineExercise> findById(@PathVariable Long id) {
-        return routineExerciseService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        RoutineExercise routineExercise = routineExerciseService.findById(id);
+        return ResponseEntity.ok(routineExercise);
     }
 
     // Listar los ejercicios pertenecientes a una rutina específica
@@ -54,29 +53,23 @@ public class RoutineExerciseController {
     // PUT: http://localhost:8080/api/routine-exercises/update/{id}
     @PutMapping("/update/{id}")
     public ResponseEntity<RoutineExercise> update(@PathVariable Long id, @RequestBody RoutineExercise details) {
-        return routineExerciseService.findById(id).map(record -> {
-            record.setExerciseName(details.getExerciseName());
-            record.setIdExercise(details.getIdExercise());
-            record.setSeries(details.getSeries());
-            record.setRepetitions(details.getRepetitions());
-            record.setRest(details.getRest());
-            if (details.getRoutine() != null) {
-                record.setRoutine(details.getRoutine());
-            }
+        RoutineExercise existingRoutineExercise = routineExerciseService.findById(id);
 
-            RoutineExercise updated = routineExerciseService.save(record);
-            return ResponseEntity.ok(updated);
-        }).orElse(ResponseEntity.notFound().build());
+        existingRoutineExercise.setExerciseName(details.getExerciseName());
+        existingRoutineExercise.setSeries(details.getSeries());
+        existingRoutineExercise.setRepetitions(details.getRepetitions());
+        existingRoutineExercise.setRest(details.getRest());
+
+        RoutineExercise routineExerciseUpdate = routineExerciseService.save(existingRoutineExercise);
+
+        return ResponseEntity.ok(routineExerciseUpdate);
     }
 
     // Eliminar un ejercicio de una rutina por su ID
     // DELETE: http://localhost:8080/api/routine-exercises/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        if (routineExerciseService.findById(id).isPresent()) {
-            routineExerciseService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        routineExerciseService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

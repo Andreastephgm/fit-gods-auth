@@ -78,10 +78,10 @@ class RoutineServiceTest {
 
         when(routineRepository.findById(1L)).thenReturn(Optional.of(routine));
 
-        Optional<Routine> result = routineService.findById(1L);
+        Routine result = routineService.findById(1L);
 
-        assertTrue(result.isPresent());
-        assertEquals("Espalda", result.get().getName());
+        assertNotNull(result);
+        assertEquals("Espalda", result.getName());
         verify(routineRepository, times(1)).findById(1L);
     }
 }

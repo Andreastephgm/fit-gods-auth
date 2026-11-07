@@ -59,10 +59,10 @@ class RoutineExerciseServiceTest {
 
         when(routineExerciseRepository.findById(1L)).thenReturn(Optional.of(routineExercise));
 
-        Optional<RoutineExercise> result = routineExerciseService.findById(1L);
+        RoutineExercise result = routineExerciseService.findById(1L);
 
-        assertTrue(result.isPresent());
-        assertNotNull(result.get());
+        assertNotNull(result);
+        assertEquals(1L, result.getIdRoutineExercise());
         verify(routineExerciseRepository, times(1)).findById(1L);
     }
 }
