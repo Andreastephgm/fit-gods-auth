@@ -1,6 +1,7 @@
 package com.example.fit_gods_springboot.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.time.LocalDate;
 
@@ -22,7 +23,9 @@ public class User {
 //atributos
     private String name;
     private String surname;
+    @NotBlank(message = "El email no puede estar en blanco!")
     private String email;
+    @NotBlank(message = "El password no puede estar en blanco!")
     private String password;
 
     @Column(name = "dateOfBirth")

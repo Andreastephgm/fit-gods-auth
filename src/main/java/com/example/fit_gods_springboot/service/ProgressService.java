@@ -23,7 +23,9 @@ public class ProgressService {
 
     public Progress save(Progress progress) {
         // Carga la entidad User persistida de MySQL antes de guardar
-        if (progress.getUser() != null && progress.getUser().getId() != null) {
+        if(progress.getUser() == null){
+            throw new IllegalArgumentException("El progreso debe estar asociada a un usuario válido con su ID.");
+        }else if (progress.getUser() != null && progress.getUser().getId() != null) {
             User userFromDb = userRepository.findById(progress.getUser().getId())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + progress.getUser().getId()));
             progress.setUser(userFromDb);

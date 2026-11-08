@@ -35,6 +35,8 @@ public class RoutineExerciseService {
                 // Asignamos la rutina persistida de la base de datos
                 routineExercise.setRoutine(routineFromDb);
             }
+        }else{
+            throw  new IllegalArgumentException("Los ejercicios deben estar asociados a una rutina valida!");
         }
         return routineExerciseRepository.save(routineExercise);
     }

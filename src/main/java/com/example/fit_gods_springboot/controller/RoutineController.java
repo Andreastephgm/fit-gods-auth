@@ -75,8 +75,11 @@ public class RoutineController {
     // DELETE: http://localhost:8080/api/routines/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        routineService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
+        if(id == null){
+            throw new IllegalArgumentException("La rutina no se pudo borrar: ID inválido!.");
+        }else{
+            routineService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
     }
 }

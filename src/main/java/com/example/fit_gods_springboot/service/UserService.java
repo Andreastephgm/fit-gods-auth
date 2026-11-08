@@ -18,7 +18,13 @@ public class UserService {
     }
 
     public User save(User user) {
-        return userRepository.save(user);
+        if(user.getEmail() == null){
+            throw new IllegalArgumentException("El usuario dene tener un email!");
+        } else if (user.getPassword() == null) {
+            throw new IllegalArgumentException("El usuario dene tener un password!");
+        }else{
+            return userRepository.save(user);
+        }
     }
 
     public List<User> findAll() {

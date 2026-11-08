@@ -23,7 +23,14 @@ public class UserController {
     @PostMapping("/new")
     public ResponseEntity<User> save(@RequestBody User user) {
         User newUser = userService.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        if(user.getEmail() == null){
+            throw new IllegalArgumentException("El usuario dene tener un email!");
+        } else if (user.getPassword() == null) {
+            throw new IllegalArgumentException("El usuario dene tener un password!");
+        }else{
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        }
+
     }
 
     // Listar todos los usuarios
