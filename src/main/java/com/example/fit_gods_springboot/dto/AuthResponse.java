@@ -13,5 +13,6 @@ import lombok.Setter;
 public class AuthResponse {
     private boolean success;
     private String message;
+    private String token;
     private Object user; //para retornar datos del usuario si la autenticación es correcta
 }

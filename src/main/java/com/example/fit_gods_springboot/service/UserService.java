@@ -38,10 +38,10 @@ public class UserService {
     //Autenticación
     public User authenticate(String email, String password) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("Credenciales inválidas o usuario no registrado."));
+                .orElseThrow(() -> new org.springframework.security.authentication.BadCredentialsException("Credenciales inválidas o usuarion no registrado") );
 
         if (!user.getPassword().equals(password)) {
-            throw  new IllegalArgumentException("Contraseña incorrecta.");
+            throw  new org.springframework.security.authentication.BadCredentialsException("Contraseña incorrecta.");
         }
 
         return user;

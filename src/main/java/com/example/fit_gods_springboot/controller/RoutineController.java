@@ -2,6 +2,7 @@ package com.example.fit_gods_springboot.controller;
 
 import com.example.fit_gods_springboot.model.Routine;
 import com.example.fit_gods_springboot.service.RoutineService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,13 @@ public class RoutineController {
     // Endpoint para guardar una nueva rutina
     // POST: http://localhost:8080/api/routines/new
     @PostMapping("/new")
-    public ResponseEntity<Routine> save(@RequestBody Routine routine) {
-        Routine newRoutine = routineService.save(routine);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newRoutine);
+    public ResponseEntity<Routine> save(@Valid @RequestBody Routine routine) {
+        if (routine.getUser() == null || routine.getUser().getId() == null) {
+            throw new IllegalArgumentException("La rutina debe estar asociada a un usuario válido con su ID.");
+        }else {
+            Routine newRoutine = routineService.save(routine);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newRoutine);
+        }
     }
 
     // Endpoint para obtener todas las rutinas registradas

@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -52,5 +53,33 @@ public class GlobalExceptionHandler {
                 request.getDescription(false).replace("uri=", "")
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // Capturar errores de autenticación o credenciales inválidas (401)
+    @ExceptionHandler({
+            org.springframework.security.authentication.BadCredentialsException.class,
+            com.example.fit_gods_springboot.exception.BadCredentialsException.class
+    })
+    public ResponseEntity<ErrorResponseDto> handleBadCredentialsException(Exception ex, WebRequest request) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(), // 401
+                "Unauthorized",
+                ex.getMessage() != null ? ex.getMessage() : "Credenciales inválidas o contraseña incorrecta.",
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(), // 400
+                "Bad Request",
+                ex.getMessage() != null ? ex.getMessage() : "Solicitud inválida.",
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

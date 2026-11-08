@@ -26,13 +26,18 @@ public class RoutineService {
 
     // Método para guardar una nueva rutina en la base de datos
     public Routine save(Routine routine) {
-        if (routine.getUser() != null && routine.getUser().getId() != null) {
-            User userFromDb = userRepository.findById(routine.getUser().getId())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + routine.getUser().getId()));
-
-            // Asignamos la entidad User completa con todos sus campos cargados
-            routine.setUser(userFromDb);
+        // Validar obligatoriedad del usuario
+        if (routine.getUser() == null || routine.getUser().getId() == null) {
+            throw new IllegalArgumentException("La rutina debe estar asociada a un usuario válido con su ID.");
         }
+
+        // Buscar el usuario en la BD para asegurar que existe
+        User userFromDb = userRepository.findById(routine.getUser().getId())
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado con ID: " + routine.getUser().getId()));
+
+        // Asignamos la entidad User completa con todos sus campos cargados
+        routine.setUser(userFromDb);
+
         return routineRepository.save(routine);
     }
 
