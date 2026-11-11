@@ -22,17 +22,18 @@ public class UserController {
     // POST: http://localhost:8080/api/users/new
     @PostMapping("/new")
     public ResponseEntity<User> save(@RequestBody User user) {
-        User newUser = userService.save(user);
-        if(user.getEmail() == null){
-            throw new IllegalArgumentException("El usuario dene tener un email!");
-        } else if (user.getPassword() == null) {
-            throw new IllegalArgumentException("El usuario dene tener un password!");
-        }else{
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        // 1. Validar primero antes de tocar la base de datos
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("El usuario debe tener un email!");
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("El usuario debe tener un password!");
         }
 
+        // 2. Guardar solo si pasa las validaciones
+        User newUser = userService.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
-
     // Listar todos los usuarios
     // GET: http://localhost:8080/api/users/all
     @GetMapping("/all")

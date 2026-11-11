@@ -3,6 +3,7 @@ package com.example.fit_gods_springboot.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,6 @@ public class Progress {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "idUser", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @NotBlank(message = "El progreso debe estar asociado a un usuario!")
+    @NotNull(message = "El progreso debe estar asociado a un usuario!")
     private User user;
 }

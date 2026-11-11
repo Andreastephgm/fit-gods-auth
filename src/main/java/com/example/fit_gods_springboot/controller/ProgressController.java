@@ -22,8 +22,6 @@ public class ProgressController {
     public ResponseEntity<Progress> save(@RequestBody Progress progress) {
         if(progress.getUser() == null){
             throw new IllegalArgumentException("El progreso debe estar asociada a un usuario válido con su ID.");
-        } else if (progress.getUser().getId() != null) {
-            throw new IllegalArgumentException("Usuario invalido: El progreso debe estar asociada a un usuario válido.");
         } else{
             Progress newProgress = progressService.save(progress);
             return ResponseEntity.status(HttpStatus.CREATED).body(newProgress);
